@@ -4,6 +4,11 @@ const {organization}=require('../model/User');
 const bcrypt=require('bcryptjs');
 const {model}=require('../model/User');
 var jwt=require('jsonwebtoken');
+const cors=require('cors');
+app.use(cors({
+  origin:'*',
+  methods:['GET','POST','DELETE','UPDATE','PUT','PATCH']
+}))
 const {registerValidation,loginValidation}=require('../validation');
 //---------------------------------------------------------------------------------------------------------------------
 //userRegisteration
