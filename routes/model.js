@@ -86,8 +86,9 @@ router.get('/',verify,async (req,res)=>{
    organization.find({},async function(err,Org){
     Ofound=Org.find(function(org,index){
       if(org._id==found.organizationIds[0].toString()){
-        return true;
-      }
+          return true;
+        } 
+      
     })
   })
   model.find({},async function(err,Mod){
