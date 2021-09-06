@@ -17,7 +17,7 @@ app.use(express.json());
 app.use('/api/user',authRoute);
 app.use('/api/posts',postRoute);
 app.use('/api/model',modelRoute);
-
-app.listen(3000,function(){
+const PORT=process.env.PORT || 3000;
+app.listen(PORT,function(){
     console.log('App lsitening on port 3000');
   });
