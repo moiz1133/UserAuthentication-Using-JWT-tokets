@@ -124,12 +124,12 @@ router.post('/login',async(req,res)=>{
     if(error) return res.status(400).send(error.details[0].message);
     //checking if email exists
     const user =await User.findOne({email:req.body.email});
-    if(!user) return res.status(400).send('BAD');
+    if(!user) return res.status(400).send({error:"BAD"});
     //PASSWORD IS CORRECT
     const validPass=await bcrypt.compare(req.body.password,user.password);
-    if(!validPass) return res.status(400).send('BAD');
+    if(!validPass) return res.status(400).send({error:"BAD"});
     //create and assign token
     const token=jwt.sign({_id:user._id},'my_secret_key',{expiresIn:'24h'});
-    res.header('auth-token',token).send(token);
+    res.header('auth-token',token).send({data:"Token"});
 });
 module.exports=router;
