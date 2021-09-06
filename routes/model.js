@@ -4,6 +4,7 @@ const {organization}=require('../model/User');
 const {User}=require('../model/User');
 const {model}=require('../model/User');
 const { decodeBase64 } = require('bcryptjs');
+var ObjectId = require('mongoose').Types.ObjectId;
 //create model
 router.get('/modelCreate',verify,async (req,res)=>{
   //function to store into database
@@ -15,7 +16,7 @@ router.get('/modelCreate',verify,async (req,res)=>{
                 return docMod;
             })
         }catch(err){
-            res.status(400).send(err);
+            res.status(400).send("BAD");
         }      
     }
   //function to add model into database
@@ -34,7 +35,7 @@ router.get('/modelCreate',verify,async (req,res)=>{
     }
 
     catch(err){
-      res.status(400).send(err);
+      res.status(400).send("BAD");
     }
   }
   //function to add userID to model table
@@ -67,7 +68,7 @@ router.get('/modelCreate',verify,async (req,res)=>{
       }     
     }      
   })
-res.send("Model Created")
+res.send(MODEL._id)
 });
 //---------------------------------------------------------------------------------------------------------------------
 //organizationRegistration
@@ -106,8 +107,9 @@ router.get('/',verify,async (req,res)=>{
 });
 //Delete User
 //------------------------------------------------------------------------------------------------------------------
-router.delete('/:id',(req,res,next)=>{
+router.delete('/:id',async (req,res,next)=>{
   ID=req.body.modelId
+  
   model.find({},async function(err,MODEL){
       modelfound=MODEL.find(function(model,index){
         if(model._id==ID){
@@ -124,19 +126,48 @@ router.delete('/:id',(req,res,next)=>{
   }
   async function deleteModelFromUser(modelfound){
       removeModel(modelfound.userId[0],ID)
-  }    
-  model.findOneAndDelete({
-      _id:ID
-  }).then(function(model){
-      deleteModelFromUser(modelfound);
-      res.send("Model Deleted");
-  })
+  }
+  if(!ObjectId.isValid(ID)){
+    res.send("BAD")
+  }
+  else if(ObjectId.isValid(ID)){
+    const modelExists =await model.findOne({_id:ID});
+    if(modelExists){
+      model.findOneAndDelete({
+        _id:ID
+    }).then(function(model){
+        deleteModelFromUser(modelfound);
+        res.send("OK");
+    })
+
+    }else{
+      res.send("BAD")
+    }  
+  
+    
+  }  
+  
 });
 //-----------------------------------------------------------------------------------------------------------------
 //Update Model
-router.put('/:id',(req,res,next)=>{
-  ID=req.body.modelId
-  model.findOneAndUpdate({_id:ID},{data:req.body.data}).then(function(model){res.send("Model Updated");})
+router.put('/:id',async (req,res,next)=>{
+  ID=req.body.modelId 
+  if(!ObjectId.isValid(ID)){
+    res.send("BAD")
+  }else if(ObjectId.isValid(ID)){
+    const modelExists =await model.findOne({_id:ID});
+    if(modelExists){
+      model.findOneAndUpdate({_id:ID},{data:req.body.data}).then(function(model){res.send("OK");})
+    }
+    else{
+      res.send("BAD")
+    }
+    
+  }
+ 
+  
+  
 });
 //-----------------------------------------------------------------------------------------------------------------
 module.exports=router;
+

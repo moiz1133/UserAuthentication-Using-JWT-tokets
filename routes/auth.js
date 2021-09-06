@@ -20,7 +20,7 @@ router.post('/userRegisteration',async(req,res)=>{
         }      
     }
     const emailExists =await User.findOne({email:req.body.email});
-    if(emailExists) return res.status(400).send('Email already exists');
+    if(emailExists) return res.status(400).send('BAD');
 
     //hashing the password
     const salt=await bcrypt.genSalt(10);
@@ -33,7 +33,7 @@ router.post('/userRegisteration',async(req,res)=>{
     });
     //saving into database
     var userRegistered= await createUser({user});
-    res.send("User Registered")
+    res.send("OK")
 });
 //-------------------------------------------------------------------------------------------------------------------------
 //organizationRegistration
@@ -55,7 +55,7 @@ router.post('/orgRegisteration',async(req,res)=>{
     });
     //saving into database
     var orgRegistered= await createOrg({org});
-    res.send("Organization Registered")
+    res.send(orgRegistered._id)
 });
 //------------------------------------------------------------------------------------------------------------------
 //userData
@@ -71,8 +71,7 @@ router.get('/organization',async(req,res)=>{
      })
 })
 //-------------------------------------------------------------------------------------------------------------------
-router.delete('/:id',(req,res,next)=>{
-    ID=req.body.userId
+router.delete('/:id',async (req,res,next)=>{
     User.find({},async function(err,USER){
         userfound=USER.find(function(user,index){
           if(user._id==ID){
@@ -101,14 +100,22 @@ router.delete('/:id',(req,res,next)=>{
         for(i=0;i<userfound.organizationIds.length;i++){
             removeUser(userfound.organizationIds[i],ID)
         }
-    }     
-    User.findOneAndDelete({
-        _id:req.body.userId
-    }).then(function(user){
-        deleteUserFromOrganization(userfound);
-        deleteUseFromModel(userfound);
-        res.send("User deleted");
-    })
+    }
+    ID=req.body.userId
+    const UserExists=await User.findOne({_id:ID});
+    if(UserExists){
+        User.findOneAndDelete({
+            _id:req.body.userId
+        }).then(function(user){
+            deleteUserFromOrganization(userfound);
+            deleteUseFromModel(userfound);
+            res.send("OK");
+        })
+
+    }else{
+        res.send("BAD")
+    } 
+    
 });
 //LOGIN
 router.post('/login',async(req,res)=>{
@@ -117,10 +124,10 @@ router.post('/login',async(req,res)=>{
     if(error) return res.status(400).send(error.details[0].message);
     //checking if email exists
     const user =await User.findOne({email:req.body.email});
-    if(!user) return res.status(400).send('Email is wrong');
+    if(!user) return res.status(400).send('BAD');
     //PASSWORD IS CORRECT
     const validPass=await bcrypt.compare(req.body.password,user.password);
-    if(!validPass) return res.status(400).send('Invalid pass');
+    if(!validPass) return res.status(400).send('BAD');
     //create and assign token
     const token=jwt.sign({_id:user._id},'my_secret_key',{expiresIn:'24h'});
     res.header('auth-token',token).send(token);

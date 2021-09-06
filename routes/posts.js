@@ -11,7 +11,7 @@ router.get('/',verify,async (req,res)=>{
         { new: true, useFindAndModify: false });
     }
     catch(err){
-      res.status(400).send(err);
+      res.status(400).send("BAD");
     }
   }
   const addUserToOrg=function(orgId,userId){
@@ -19,9 +19,16 @@ router.get('/',verify,async (req,res)=>{
       { new: true, useFindAndModify: false });
   }
   userId=Object.values(req.user)[0];
-  var user=await addOrgToUser(userId,req.body.orgId);
-  var org=await addUserToOrg(req.body.orgId,userId);
-  res.send("User Added to organization");
+  ID=req.body.orgId
+  const organizationExists=await organization.findOne({_id:ID});
+  if(organizationExists){
+    var user=await addOrgToUser(userId,req.body.orgId);
+    var org=await addUserToOrg(req.body.orgId,userId);
+    res.send("OK");
+  }else{
+    res.send("BAD")
+  }
+
 });
 
 module.exports=router;
