@@ -5,7 +5,7 @@ const app=express();
 const dotenv=require('dotenv');
 dotenv.config();
 const cors=require('cors');
-app.use(cors({
+app.all(cors({
   origin:'*',
   methods:['GET','POST','DELETE','UPDATE','PUT','PATCH']
 }))
