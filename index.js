@@ -5,10 +5,7 @@ const app=express();
 const dotenv=require('dotenv');
 dotenv.config();
 const cors=require('cors');
-app.all(cors({
-  origin:'*',
-  methods:['GET','POST','DELETE','UPDATE','PUT','PATCH']
-}))
+app.use(cors())
 //importing routes
 const authRoute=require('./routes/auth');
 const postRoute=require('./routes/posts');
