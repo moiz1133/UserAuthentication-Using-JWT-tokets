@@ -4,6 +4,8 @@ const mongoose=require('mongoose');
 const app=express();
 const dotenv=require('dotenv');
 dotenv.config();
+const cors=require('cors');
+app.use(cors())
 //importing routes
 const authRoute=require('./routes/auth');
 const postRoute=require('./routes/posts');
