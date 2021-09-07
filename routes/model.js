@@ -102,7 +102,7 @@ router.get('/',verify,async (req,res)=>{
       })
       AllModels.push(Mfound)
     }
-    res.send({data:AllModels})
+    res.json({data:AllModels})
       
   })      
 });
