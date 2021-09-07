@@ -18,11 +18,11 @@ router.post('/userRegisteration',async(req,res)=>{
             })
     
         }catch(err){
-            res.status(400).send(err);
+            res.status(400).send({error:"BAD"});
         }      
     }
     const emailExists =await User.findOne({email:req.body.email});
-    if(emailExists) return res.status(400).send('BAD');
+    if(emailExists) return res.status(400).send({error:"BAD"});
 
     //hashing the password
     const salt=await bcrypt.genSalt(10);
@@ -35,7 +35,7 @@ router.post('/userRegisteration',async(req,res)=>{
     });
     //saving into database
     var userRegistered= await createUser({user});
-    res.send("OK")
+    res.send({status:"OK"})
 });
 //-------------------------------------------------------------------------------------------------------------------------
 //organizationRegistration
@@ -48,7 +48,7 @@ router.post('/orgRegisteration',async(req,res)=>{
             })
     
         }catch(err){
-            res.status(400).send(err);
+            res.status(400).send({error:"BAD"});
         }      
     }
     //create a new Organization
@@ -57,19 +57,19 @@ router.post('/orgRegisteration',async(req,res)=>{
     });
     //saving into database
     var orgRegistered= await createOrg({org});
-    res.send(orgRegistered._id)
+    res.send({data:orgRegistered._id})
 });
 //------------------------------------------------------------------------------------------------------------------
 //userData
 router.get('/',async(req,res)=>{
     User.find({}, function(err, Users){
-        res.send(Users)
+        res.send({data:Users})
      })
 })
 //OrganizationData
 router.get('/organization',async(req,res)=>{
     organization.find({}, function(err, org){
-        res.send(org)
+        res.send({data:org})
      })
 })
 //-------------------------------------------------------------------------------------------------------------------
@@ -111,11 +111,11 @@ router.delete('/:id',async (req,res,next)=>{
         }).then(function(user){
             deleteUserFromOrganization(userfound);
             deleteUseFromModel(userfound);
-            res.send("OK");
+            res.send({status:"OK"});
         })
 
     }else{
-        res.send("BAD")
+        res.send({error:"BAD"})
     } 
     
 });
@@ -123,7 +123,7 @@ router.delete('/:id',async (req,res,next)=>{
 router.post('/login',async(req,res)=>{
     //LETS VALIDATE THE DATA BEFORE ENTERING A USER
     const {error}=loginValidation(req.body);
-    if(error) return res.status(400).send(error.details[0].message);
+    if(error) return res.status(400).send({error:"BAD"});
     //checking if email exists
     const user =await User.findOne({email:req.body.email});
     if(!user) return res.status(400).send({error:"BAD"});

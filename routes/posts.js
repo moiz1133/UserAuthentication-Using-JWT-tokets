@@ -11,7 +11,7 @@ router.get('/',verify,async (req,res)=>{
         { new: true, useFindAndModify: false });
     }
     catch(err){
-      res.status(400).send("BAD");
+      res.status(400).send({status:"BAD"});
     }
   }
   const addUserToOrg=function(orgId,userId){
@@ -24,9 +24,9 @@ router.get('/',verify,async (req,res)=>{
   if(organizationExists){
     var user=await addOrgToUser(userId,req.body.orgId);
     var org=await addUserToOrg(req.body.orgId,userId);
-    res.send("OK");
+    res.send({status:"OK"});
   }else{
-    res.send("BAD")
+    res.send({status:"BAD"})
   }
 
 });

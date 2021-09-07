@@ -16,7 +16,7 @@ router.get('/modelCreate',verify,async (req,res)=>{
                 return docMod;
             })
         }catch(err){
-            res.status(400).send("BAD");
+            res.status(400).send({status:"BAD"});
         }      
     }
   //function to add model into database
@@ -35,7 +35,7 @@ router.get('/modelCreate',verify,async (req,res)=>{
     }
 
     catch(err){
-      res.status(400).send("BAD");
+      res.status(400).send({status:"BAD"});
     }
   }
   //function to add userID to model table
@@ -68,7 +68,7 @@ router.get('/modelCreate',verify,async (req,res)=>{
       }     
     }      
   })
-res.send(MODEL._id)
+res.send({data:MODEL._id})
 });
 //---------------------------------------------------------------------------------------------------------------------
 //organizationRegistration
@@ -102,7 +102,7 @@ router.get('/',verify,async (req,res)=>{
       })
       AllModels.push(Mfound)
     }
-    res.send(AllModels)
+    res.send({data:AllModels})
       
   })      
 });
@@ -129,7 +129,7 @@ router.delete('/:id',async (req,res,next)=>{
       removeModel(modelfound.userId[0],ID)
   }
   if(!ObjectId.isValid(ID)){
-    res.send("BAD")
+    res.send({status:"BAD"})
   }
   else if(ObjectId.isValid(ID)){
     const modelExists =await model.findOne({_id:ID});
@@ -138,12 +138,12 @@ router.delete('/:id',async (req,res,next)=>{
         _id:ID
     }).then(function(model){
         deleteModelFromUser(modelfound);
-        res.send("OK");
+        res.send({status:"OK"});
     })
 
     }else{
-      res.send("BAD")
-    }  
+      res.send({status:"BAD"})
+    } 
   
     
   }  
@@ -154,14 +154,14 @@ router.delete('/:id',async (req,res,next)=>{
 router.put('/:id',async (req,res,next)=>{
   ID=req.body.modelId 
   if(!ObjectId.isValid(ID)){
-    res.send("BAD")
+    res.send({status:"BAD"})
   }else if(ObjectId.isValid(ID)){
     const modelExists =await model.findOne({_id:ID});
     if(modelExists){
-      model.findOneAndUpdate({_id:ID},{data:req.body.data}).then(function(model){res.send("OK");})
+      model.findOneAndUpdate({_id:ID},{data:req.body.data}).then(function(model){res.send({status:"OK"});})
     }
     else{
-      res.send("BAD")
+      res.send({status:"BAD"})
     }
     
   }
