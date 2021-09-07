@@ -4,8 +4,6 @@ const {organization}=require('../model/User');
 const bcrypt=require('bcryptjs');
 const {model}=require('../model/User');
 var jwt=require('jsonwebtoken');
-const cors=require('cors');
-router.use(cors())
 const {registerValidation,loginValidation}=require('../validation');
 //---------------------------------------------------------------------------------------------------------------------
 //userRegisteration

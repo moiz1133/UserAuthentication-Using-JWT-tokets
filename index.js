@@ -5,7 +5,11 @@ const app=express();
 const dotenv=require('dotenv');
 dotenv.config();
 const cors=require('cors');
-app.use(cors())
+app.use(cors(
+  {
+    origin: '*'
+  }
+))
 //importing routes
 const authRoute=require('./routes/auth');
 const postRoute=require('./routes/posts');

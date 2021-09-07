@@ -4,8 +4,7 @@ const {organization}=require('../model/User');
 const {User}=require('../model/User');
 const {model}=require('../model/User');
 const { decodeBase64 } = require('bcryptjs');
-const cors=require('cors');
-router.use(cors())
+
 router.get('/',verify,async (req,res)=>{
   const addOrgToUser=function(userId,orgId){
     try{
